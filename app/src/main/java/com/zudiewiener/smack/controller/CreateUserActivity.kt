@@ -6,13 +6,14 @@ import android.os.Bundle
 import android.view.View
 import com.zudiewiener.smack.R
 import com.zudiewiener.smack.services.AuthService
+import com.zudiewiener.smack.services.UserDataService
 import kotlinx.android.synthetic.main.activity_create_user.*
 import java.util.*
 
 class CreateUserActivity : AppCompatActivity() {
 
     var userAvatar = "profiledefault"
-    var avatarColour = "[0.5, 0.5, 0.5, 1]"
+    var avatarColor = "[0.5, 0.5, 0.5, 1]"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,7 +51,7 @@ class CreateUserActivity : AppCompatActivity() {
         val savedR = r.toDouble() / 255
         val savedG = g.toDouble() / 255
         val savedB = b.toDouble() / 255
-        avatarColour = "[$savedR,$savedG,$savedB, 1]"
+        avatarColor = "[$savedR,$savedG,$savedB, 1]"
     }
 
     fun createUserClicked(view: View){
@@ -61,8 +62,11 @@ class CreateUserActivity : AppCompatActivity() {
             if (registerSuccess){
                 AuthService.loginUser(this,email,password){loginSuccess ->
                     if (loginSuccess){
-                        println(AuthService.userEmail)
-                        println(AuthService.authToken)
+                       AuthService.createUser(this,userName,email,userAvatar, avatarColor) { createSuccess ->
+                            if (createSuccess){
+                                finish()
+                            }
+                       }
                     }
                 }
             }
